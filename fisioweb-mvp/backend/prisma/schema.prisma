@@ -1,0 +1,81 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  phone        String?
+  passwordHash String
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+}
+
+model Professional {
+  id           String         @id @default(cuid())
+  name         String
+  email        String         @unique
+  passwordHash String
+  specialty    String
+  bio          String?
+  photoUrl     String?
+  isActive     Boolean        @default(true)
+  appointments Appointment[]
+  availability Availability[]
+  blocks       Block[]
+  createdAt    DateTime       @default(now())
+}
+
+model Treatment {
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  durationMins Int
+  isActive     Boolean       @default(true)
+  appointments Appointment[]
+}
+
+model Availability {
+  id             String       @id @default(cuid())
+  professionalId String
+  dayOfWeek      Int          // 0=Lunes 1=Martes ... 6=Domingo
+  startTime      String       // "09:00"
+  endTime        String       // "18:00"
+  professional   Professional @relation(fields: [professionalId], references: [id])
+}
+
+model Block {
+  id             String       @id @default(cuid())
+  professionalId String
+  startDatetime  DateTime
+  endDatetime    DateTime
+  reason         String?
+  professional   Professional @relation(fields: [professionalId], references: [id])
+}
+
+model Appointment {
+  id             String       @id @default(cuid())
+  patientId      String
+  professionalId String
+  treatmentId    String
+  startTime      DateTime
+  endTime        DateTime
+  status         AppStatus    @default(CONFIRMED)
+  cancelToken    String       @unique @default(cuid())
+  createdAt      DateTime     @default(now())
+  patient        Patient      @relation(fields: [patientId], references: [id])
+  professional   Professional @relation(fields: [professionalId], references: [id])
+  treatment      Treatment    @relation(fields: [treatmentId], references: [id])
+}
+
+enum AppStatus {
+  CONFIRMED
+  CANCELLED
+}
