@@ -32,6 +32,17 @@ dist/
 *.tsbuildinfo
 out/
 gen/
+.next/
+.vercel/
+.turbo/
+.npm/
+.pnpm-store/
+
+# Base de datos local (desarrollo/tests)
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
 
 # Variables de entorno y secretos
 .env

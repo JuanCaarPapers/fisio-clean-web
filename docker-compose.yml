@@ -14,6 +14,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 15s
 
   backend:
     build:
@@ -34,6 +35,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    restart: on-failure
 
   frontend:
     build:
@@ -47,6 +49,17 @@ services:
       - ./frontend/src:/app/src
     depends_on:
       - backend
+
+  landing:
+    build:
+      context: ./landing
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_BOOKING_URL=http://localhost:5173/book
+    restart: unless-stopped
 
 volumes:
   postgres_data:
