@@ -17,6 +17,17 @@
 
 ---
 
+**Documentos SDLC previos al código:**
+- [Análisis Funcional y Requisitos](memory-bank/Analisis_Funcional_y_Requisitos.pdf)
+- [Historias de Usuario](memory-bank/Historias_de_Usuario.pdf)
+- [Propuesta Técnica](memory-bank/Propuesta_Tecnica.pdf)
+ 
+**Documentación del proceso:**
+- Los prompts utilizados están en `prompts/`
+- Las decisiones técnicas y deuda identificada están en `memory-bank/`
+ 
+---
+
 ## Contexto del proyecto
 
 **FisioWeb MVP** es un proyecto desarrollado por **Juan García** en el marco de la microcredencial **GenAI de NTT DATA** (Departamento GenAI).
