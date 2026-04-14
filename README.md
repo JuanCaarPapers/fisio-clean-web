@@ -1,6 +1,10 @@
 # FisioWeb MVP
 
 <p align="center">
+  <img src="docs/screenshots/Landing 1.jpeg" alt="FisioWeb - Pantalla principal" width="800"/>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React"/>
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"/>
   <img src="https://img.shields.io/badge/Node.js-20-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js"/>
@@ -15,19 +19,6 @@
   Proyecto de demostración del <strong>SDLC asistido por IA</strong> · <strong>Microcredencial GenAI · NTT DATA</strong>
 </p>
 
----
-
-**Documentos SDLC previos al código:**
-- [Análisis Funcional y Requisitos](memory-bank/Analisis_Funcional_y_Requisitos.pdf)
-- [Historias de Usuario](memory-bank/Historias_de_Usuario.pdf)
-- [Propuesta Técnica](memory-bank/Propuesta_Tecnica.pdf)
- 
-**Documentación del proceso:**
-- Los prompts utilizados están en `prompts/`
-- Las decisiones técnicas y deuda identificada están en `memory-bank/`
-
-  
- 
 ---
 
 ## Contexto del proyecto
@@ -46,9 +37,14 @@ Implementación asistida por IA (Claude Code)
 Tests reales  +  Documentación de calidad profesional
 ```
 
-Todos los documentos previos al código están disponibles en `ai-context/`.  
-Los prompts utilizados están en `prompts/`.  
-Las decisiones técnicas y deuda identificada están en `memory-bank/`.
+**Documentos SDLC previos al código:**
+- [Análisis Funcional y Requisitos](ai-context/Analisis_Funcional_y_Requisitos.pdf)
+- [Historias de Usuario](ai-context/Historias_de_Usuario.pdf)
+- [Propuesta Técnica](ai-context/Propuesta_Tecnica.pdf)
+
+**Documentación del proceso:**
+- Los prompts utilizados están en `prompts/`
+- Las decisiones técnicas y deuda identificada están en `memory-bank/`
 
 ---
 
@@ -92,13 +88,26 @@ PostgreSQL 16  :5432
 
 ## Capturas de pantalla
 
-| Catálogo de profesionales | Flujo de reserva |
-|:---:|:---:|
-| <img src="docs/screenshots/home.png" width="380"/> | <img src="docs/screenshots/booking.png" width="380"/> |
+### Landing page
 
-| Panel del fisioterapeuta | Panel de administración |
+|                                       Home                                        |                                           Quiénes somos                                            |
+|:---------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------:|
+| <img src="docs/screenshots/Landing 1.png" alt="Landing page - Home" width="380"/> | <img src="docs/screenshots/Landing 2.png" alt="Landing page - Sección Quiénes somos" width="380"/> |
+### Ejemplo del panel del fisio
+
+| Mi agenda | Configurar disponibilidad |
 |:---:|:---:|
-| <img src="docs/screenshots/physio-agenda.png" width="380"/> | <img src="docs/screenshots/admin.png" width="380"/> |
+| <img src="docs/screenshots/Panel fisio.png" alt="Panel fisio - Mi agenda" width="380"/> | <img src="docs/screenshots/Disp fisio.png" alt="Panel fisio - Configurar disponibilidad" width="380"/> |
+
+### Ejemplo del panel del cliente
+
+| Paso 1 - Tratamiento | Paso 2 - Profesional |
+|:---:|:---:|
+| <img src="docs/screenshots/Cliente1.png" alt="Panel cliente - Paso 1 Tratamiento" width="380"/> | <img src="docs/screenshots/Cliente2.png" alt="Panel cliente - Paso 2 Profesional" width="380"/> |
+
+| Paso 3 - Fecha y hora | Paso 4 - Confirmación |
+|:---:|:---:|
+| <img src="docs/screenshots/Cliente3.png" alt="Panel cliente - Paso 3 Fecha y hora" width="380"/> | <img src="docs/screenshots/Cliente4.png" alt="Panel cliente - Paso 4 Confirmación" width="380"/> |
 
 ---
 
@@ -381,9 +390,9 @@ Los documentos generados antes de escribir código están en `ai-context/`:
 
 | Documento | Descripción |
 |-----------|-------------|
-| `Analisis_funcional.md` | Requisitos funcionales, actores y casos de uso |
-| `Historias_de_usuario.md` | User stories con criterios de aceptación |
-| `Propuesta_tecnica.md` | Decisiones de stack, arquitectura y seguridad |
+| [Análisis Funcional y Requisitos](ai-context/Analisis_Funcional_y_Requisitos.pdf) | Requisitos funcionales, actores, casos de uso y especificación detallada |
+| [Historias de Usuario](ai-context/Historias_de_Usuario.pdf) | User stories con criterios de aceptación y escenarios de prueba |
+| [Propuesta Técnica](ai-context/Propuesta_Tecnica.pdf) | Decisiones de stack, arquitectura, seguridad y plan de implementación |
 
 ---
 
