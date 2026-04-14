@@ -25,6 +25,8 @@
 **Documentación del proceso:**
 - Los prompts utilizados están en `prompts/`
 - Las decisiones técnicas y deuda identificada están en `memory-bank/`
+
+  
  
 ---
 
