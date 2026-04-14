@@ -1,34 +1,41 @@
 # FisioWeb MVP
 
-Plataforma web de reservas online para una clínica de fisioterapia desarrollada como demostración del ciclo de vida completo del software (SDLC) asistido por IA generativa (Claude + Claude Code), en el marco del programa de microcredencial **GenAI de NTT DATA**.
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React"/>
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Node.js-20-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js"/>
+  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL"/>
+  <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker"/>
+  <img src="https://img.shields.io/badge/Prisma-5-2D3748?style=flat-square&logo=prisma&logoColor=white" alt="Prisma"/>
+  <img src="https://img.shields.io/badge/Jest-Tests-C21325?style=flat-square&logo=jest&logoColor=white" alt="Jest"/>
+</p>
 
-> Todo corre en local con Docker. No hay despliegue en producción.
-
----
-
-## Índice
-
-1. [Descripción del proyecto](#descripción-del-proyecto)
-2. [Stack tecnológico](#stack-tecnológico)
-3. [Arquitectura](#arquitectura)
-4. [Quickstart](#quickstart)
-5. [Credenciales demo](#credenciales-demo)
-6. [Funcionalidades por rol](#funcionalidades-por-rol)
-7. [API REST](#api-rest)
-8. [Modelo de datos](#modelo-de-datos)
-9. [Estructura del repositorio](#estructura-del-repositorio)
-10. [Tests](#tests)
-11. [Variables de entorno](#variables-de-entorno)
+<p align="center">
+  Plataforma web de reservas online para clínica de fisioterapia.<br/>
+  Proyecto de demostración del <strong>SDLC asistido por IA</strong> · <strong>Microcredencial GenAI · NTT DATA</strong>
+</p>
 
 ---
 
-## Descripción del proyecto
+## Contexto del proyecto
 
-FisioWeb MVP digitaliza la gestión de reservas de una clínica de fisioterapia. Permite a los pacientes explorar el catálogo de profesionales y tratamientos, reservar citas online y cancelarlas. Los fisioterapeutas gestionan su disponibilidad y agenda. El administrador tiene acceso total al sistema.
+**FisioWeb MVP** es un proyecto desarrollado por **Juan García** en el marco de la microcredencial **GenAI de NTT DATA** (Departamento GenAI).
 
-**Objetivo del proyecto:** evidenciar el recorrido completo del SDLC asistido por IA, produciendo código funcional, tests reales y documentación de calidad profesional en el menor tiempo posible.
+El objetivo no es producción: es evidenciar el recorrido completo del ciclo de vida del software (**SDLC**) asistido por IA generativa, de principio a fin, usando **Claude** y **Claude Code** como copiloto de desarrollo.
 
-**Contexto SDLC:** los documentos de análisis funcional, historias de usuario y propuesta técnica se generaron antes del código y están disponibles en `ai-context/`.
+El flujo seguido fue:
+
+```
+Análisis funcional  →  Historias de usuario  →  Propuesta técnica
+        ↓
+Implementación asistida por IA (Claude Code)
+        ↓
+Tests reales  +  Documentación de calidad profesional
+```
+
+Todos los documentos previos al código están disponibles en `ai-context/`.  
+Los prompts utilizados están en `prompts/`.  
+Las decisiones técnicas y deuda identificada están en `memory-bank/`.
 
 ---
 
@@ -66,7 +73,19 @@ PostgreSQL 16  :5432
 - El backend es la única capa que accede a la base de datos.
 - El frontend nunca accede directamente a PostgreSQL.
 - Las validaciones críticas (disponibilidad, solapamiento, ownership) van siempre en el backend.
-- La creación de citas usa transacciones Prisma para prevenir doble booking bajo concurrencia.
+- La creación de citas usa **transacciones Prisma** para prevenir doble booking bajo concurrencia.
+
+---
+
+## Capturas de pantalla
+
+| Catálogo de profesionales | Flujo de reserva |
+|:---:|:---:|
+| <img src="docs/screenshots/home.png" width="380"/> | <img src="docs/screenshots/booking.png" width="380"/> |
+
+| Panel del fisioterapeuta | Panel de administración |
+|:---:|:---:|
+| <img src="docs/screenshots/physio-agenda.png" width="380"/> | <img src="docs/screenshots/admin.png" width="380"/> |
 
 ---
 
@@ -74,31 +93,41 @@ PostgreSQL 16  :5432
 
 ### Requisitos
 
-- Docker Desktop (incluye Docker Compose)
-- Node.js 20+ (solo para generar el hash del admin)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (incluye Docker Compose)
+- Node.js 20+ *(solo para generar el hash del admin)*
 
-### Pasos
+### Primera vez
 
 ```bash
-# 1. Entrar en el directorio del proyecto
+# 1. Clonar el repositorio y entrar
+git clone <url-del-repo>
 cd fisioweb-mvp
 
 # 2. Copiar las variables de entorno
 cp .env.example .env
 
-# 3. Generar el hash de la contraseña del admin y pegarlo en .env como ADMIN_PASSWORD_HASH
+# 3. Generar el hash de contraseña del admin y pegarlo en .env como ADMIN_PASSWORD_HASH
 docker run --rm node:20-alpine sh -c \
   "mkdir /tmp/h && cd /tmp/h && npm init -y > /dev/null 2>&1 && \
    npm install bcryptjs > /dev/null 2>&1 && \
    node -e \"const b=require('bcryptjs'); b.hash('admin123', 12).then(console.log)\""
 
-# 4. Arrancar todo el entorno (primera vez tarda ~2 min)
+# 4. Arrancar todo el entorno (~2 min la primera vez)
 docker compose up --build
 ```
 
 Al arrancar, el backend ejecuta automáticamente:
-1. `prisma migrate deploy` — aplica las migraciones pendientes
-2. `seed.ts` — carga los datos demo (solo si la BD está vacía)
+1. `prisma migrate deploy` — crea las tablas
+2. `prisma db seed` — carga datos demo (profesionales, tratamientos, paciente de prueba)
+
+### Arranques sucesivos
+
+```bash
+docker compose up          # arrancar (~15 seg)
+docker compose stop        # parar (conserva datos)
+docker compose down        # parar y eliminar contenedores
+docker compose down -v     # reset completo (borra la BD)
+```
 
 ### URLs
 
@@ -107,53 +136,6 @@ Al arrancar, el backend ejecuta automáticamente:
 | Frontend | http://localhost:5173 |
 | Backend API | http://localhost:3000/api |
 | Health check | http://localhost:3000/api/health |
-
----
-
-## Arranque del entorno
-
-### Primera vez (instalación completa)
-
-```bash
-# 1. Entrar al directorio del proyecto
-cd fisioweb-mvp
-
-# 2. Copiar las variables de entorno
-cp .env.example .env
-
-# 3. Generar el hash de la contraseña del admin y pegarlo en .env como ADMIN_PASSWORD_HASH
-docker run --rm node:20-alpine sh -c \
-  "mkdir /tmp/h && cd /tmp/h && npm init -y > /dev/null 2>&1 && \
-   npm install bcryptjs > /dev/null 2>&1 && \
-   node -e \"const b=require('bcryptjs'); b.hash('admin123', 12).then(console.log)\""
-
-# 4. Construir y arrancar todos los servicios (tarda ~2 min la primera vez)
-docker compose up --build
-```
-
-Al arrancar por primera vez, el backend ejecuta automáticamente:
-1. `prisma migrate deploy` — crea las tablas en la base de datos
-2. `prisma db seed` — carga los datos demo (profesionales, tratamientos, paciente de prueba)
-
-### Cada vez que se quiera iniciar (después de la primera vez)
-
-```bash
-# Arrancar los servicios ya construidos (tarda ~15 seg)
-docker compose up
-```
-
-### Parar el entorno
-
-```bash
-# Parar los contenedores (conserva los datos de la BD)
-docker compose stop
-
-# Parar y eliminar los contenedores (conserva los datos del volumen)
-docker compose down
-
-# Parar, eliminar contenedores Y borrar la base de datos (reset completo)
-docker compose down -v
-```
 
 ---
 
@@ -172,27 +154,23 @@ docker compose down -v
 ## Funcionalidades por rol
 
 ### Público (sin autenticación)
-
 - Explorar catálogo de fisioterapeutas con perfil detallado
 - Ver catálogo de tratamientos con duración y descripción
 - Consultar slots disponibles por profesional, fecha y tratamiento
 - Cancelar cita por token único (sin login)
 
 ### Paciente
-
 - Registro y login
 - Flujo de reserva multi-step: tratamiento → profesional → fecha/hora → confirmación
 - Ver historial de citas con estado
 - Cancelar citas confirmadas
 
 ### Fisioterapeuta
-
 - Ver agenda propia (citas confirmadas agrupadas por día)
 - Configurar disponibilidad semanal (días y franjas horarias)
 - Crear y eliminar bloqueos de agenda
 
 ### Administrador
-
 - Agenda global con filtro por profesional
 - Crear citas manuales
 - CRUD de profesionales (alta, edición, activar/desactivar)
@@ -202,13 +180,13 @@ docker compose down -v
 
 ## API REST
 
-### Públicos (sin auth)
+### Endpoints públicos
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | `GET` | `/api/professionals` | Lista de profesionales activos |
-| `GET` | `/api/professionals/:id` | Perfil detallado con disponibilidad |
-| `GET` | `/api/treatments` | Catálogo de tratamientos activos |
+| `GET` | `/api/professionals/:id` | Perfil detallado |
+| `GET` | `/api/treatments` | Catálogo de tratamientos |
 | `GET` | `/api/availability/:profId?date=YYYY-MM-DD&treatmentId=` | Slots disponibles |
 | `POST` | `/api/auth/register` | Registro de paciente |
 | `POST` | `/api/auth/login` | Login — devuelve JWT |
@@ -254,135 +232,34 @@ docker compose down -v
 ## Modelo de datos
 
 ```
-Patient            Professional
-───────            ────────────
-id                 id
-name               name
-email (unique)     email (unique)
-phone?             passwordHash
-passwordHash       specialty
-createdAt          bio?
-                   photoUrl?
-                   isActive
-                   createdAt
+Patient                    Professional
+───────                    ────────────
+id (cuid)                  id (cuid)
+name                       name
+email (unique)             email (unique)
+phone?                     passwordHash
+passwordHash               specialty
+createdAt                  bio?  ·  photoUrl?
+                           isActive  ·  createdAt
 
-Treatment          Availability
-─────────          ────────────
-id                 id
-name               professionalId → Professional
-description?       dayOfWeek  (0=Lun … 6=Dom)
-durationMins       startTime  "HH:MM"
-isActive           endTime    "HH:MM"
+Treatment                  Availability
+─────────                  ────────────
+id (cuid)                  id (cuid)
+name                       professionalId → Professional
+description?               dayOfWeek  (0=Lun … 6=Dom)
+durationMins               startTime "HH:MM"
+isActive                   endTime   "HH:MM"
 
-Block              Appointment
-─────              ───────────
-id                 id
-professionalId     patientId      → Patient
-startDatetime      professionalId → Professional
-endDatetime        treatmentId    → Treatment
-reason?            startTime
-                   endTime
-                   status  CONFIRMED | CANCELLED
-                   cancelToken (unique)
-                   createdAt
-```
-
----
-
-## Estructura del repositorio
-
-```
-fisioweb-mvp/
-├── backend/
-│   ├── src/
-│   │   ├── app.ts                    # Express + rutas + CORS
-│   │   ├── server.ts                 # Arranque, migraciones, seed
-│   │   ├── prisma.ts                 # Singleton PrismaClient
-│   │   ├── routes/                   # auth, professionals, treatments,
-│   │   │                             #   availability, appointments, physio, admin
-│   │   ├── controllers/              # Handlers HTTP ligeros
-│   │   ├── services/                 # Lógica de negocio
-│   │   │   ├── auth.service.ts
-│   │   │   ├── professional.service.ts
-│   │   │   ├── treatment.service.ts
-│   │   │   ├── availability.service.ts
-│   │   │   ├── appointment.service.ts
-│   │   │   └── email-mock.service.ts
-│   │   └── middleware/
-│   │       └── auth.middleware.ts    # authenticateToken, requireRole
-│   ├── prisma/
-│   │   ├── schema.prisma
-│   │   ├── seed.ts
-│   │   └── migrations/
-│   ├── jest.config.ts
-│   ├── tsconfig.json
-│   ├── Dockerfile
-│   └── package.json
-│
-├── frontend/
-│   ├── src/
-│   │   ├── main.tsx                  # Punto de entrada
-│   │   ├── index.css                 # Tailwind
-│   │   ├── types/index.ts            # Tipos TypeScript compartidos
-│   │   ├── context/
-│   │   │   └── AuthContext.tsx       # JWT decode + localStorage
-│   │   ├── router/index.tsx          # Rutas + ProtectedRoute
-│   │   ├── services/api.ts           # Axios + interceptor auth
-│   │   ├── hooks/
-│   │   │   ├── useProfessionals.ts
-│   │   │   └── useTreatments.ts
-│   │   ├── components/
-│   │   │   └── Layout.tsx            # Nav + estructura base
-│   │   ├── pages/
-│   │   │   ├── HomePage.tsx
-│   │   │   ├── ProfessionalDetailPage.tsx
-│   │   │   ├── TreatmentsPage.tsx
-│   │   │   ├── LoginPage.tsx
-│   │   │   ├── RegisterPage.tsx
-│   │   │   ├── MyAppointmentsPage.tsx
-│   │   │   ├── CancelByTokenPage.tsx
-│   │   │   ├── PhysioAgendaPage.tsx
-│   │   │   ├── PhysioAvailabilityPage.tsx
-│   │   │   ├── AdminAppointmentsPage.tsx
-│   │   │   ├── AdminProfessionalsPage.tsx
-│   │   │   └── AdminTreatmentsPage.tsx
-│   │   └── features/
-│   │       └── booking/              # Flujo multi-step
-│   │           ├── BookingPage.tsx   # Orquestador con useReducer
-│   │           ├── Step1Treatment.tsx
-│   │           ├── Step2Professional.tsx
-│   │           ├── Step3DateTime.tsx
-│   │           └── Step4Confirm.tsx
-│   ├── vite.config.ts
-│   ├── tsconfig.json
-│   ├── tailwind.config.js
-│   ├── Dockerfile
-│   └── package.json
-│
-├── tests/
-│   ├── unit/
-│   │   ├── auth.service.test.ts
-│   │   ├── availability.service.test.ts
-│   │   └── appointment.service.test.ts
-│   └── integration/
-│       ├── auth.api.test.ts
-│       ├── appointments.api.test.ts
-│       └── availability.api.test.ts
-│
-├── ai-context/                       # Documentos SDLC previos al código
-│   ├── Analisis_funcional.md
-│   ├── Hisotrias de usuario.md
-│   └── Propuesta tecnica.md
-│
-├── memory-bank/
-│   ├── plan.md                       # Plan de implementación completo
-│   ├── decisions.md                  # Decisiones técnicas tomadas
-│   └── technical-debt.md             # Deuda técnica identificada
-│
-├── docker-compose.yml
-├── .env.example
-├── CLAUDE.md
-└── README.md
+Block                      Appointment
+─────                      ───────────
+id (cuid)                  id (cuid)
+professionalId             patientId      → Patient
+startDatetime              professionalId → Professional
+endDatetime                treatmentId    → Treatment
+reason?                    startTime  ·  endTime
+                           status  CONFIRMED | CANCELLED
+                           cancelToken (unique)
+                           createdAt
 ```
 
 ---
@@ -393,42 +270,77 @@ fisioweb-mvp/
 cd backend
 npm install
 
-# Todos los tests con informe de cobertura
-npm test
-
-# Solo tests unitarios (no requieren DB)
-npm run test:unit
-
-# Solo tests de integración (requiere PostgreSQL activo)
-npm run test:integration
+npm test                  # todos los tests + cobertura
+npm run test:unit         # solo unitarios (no requieren DB)
+npm run test:integration  # solo integración (requiere PostgreSQL)
 ```
 
-### Tests unitarios
+### Cobertura
 
-Usan `jest.mock('../prisma')` para aislar los servicios de la base de datos. Cubren:
+| Suite | Qué cubre |
+|-------|-----------|
+| **Unitarios** | `AuthService`, `AvailabilityService`, `AppointmentService` — con Prisma mockeado |
+| **Integración** | `auth.api`, `appointments.api`, `availability.api` — con Supertest sobre Express real |
 
-- `AuthService` — registro, login correcto e incorrecto, JWT payload
-- `AvailabilityService` — generación de slots, filtrado por citas y bloqueos
-- `AppointmentService` — doble booking, bloqueos, fuera de disponibilidad, cancelación con ownership
+Objetivo mínimo: **≥ 70 % en servicios de negocio del backend**.
 
-### Tests de integración
+---
 
-Usan Supertest contra la aplicación Express real con base de datos activa. Requieren `TEST_DATABASE_URL` en `backend/.env`.
+## Estructura del repositorio
 
-Cubren:
-- `auth.api` — register, login, errores de validación
-- `appointments.api` — crear cita, doble booking, cancelar, cancelar por token
-- `availability.api` — slots disponibles, día sin disponibilidad, parámetros faltantes
-
-### Cobertura objetivo
-
-≥ 70% en servicios de negocio del backend.
+```
+fisioweb-mvp/
+├── backend/
+│   ├── src/
+│   │   ├── routes/          # auth · professionals · treatments
+│   │   │                    # availability · appointments · physio · admin
+│   │   ├── controllers/     # Handlers HTTP ligeros
+│   │   ├── services/        # Lógica de negocio (auth · professional · treatment
+│   │   │                    # availability · appointment · email-mock)
+│   │   └── middleware/
+│   │       └── auth.middleware.ts   # authenticateToken · requireRole
+│   ├── prisma/
+│   │   ├── schema.prisma
+│   │   ├── seed.ts
+│   │   └── migrations/
+│   └── jest.config.ts
+│
+├── frontend/
+│   ├── src/
+│   │   ├── context/         # AuthContext (JWT decode + localStorage)
+│   │   ├── router/          # Rutas + ProtectedRoute
+│   │   ├── services/        # Axios + interceptor auth
+│   │   ├── hooks/           # useProfessionals · useTreatments
+│   │   ├── pages/           # Todas las páginas por rol
+│   │   └── features/
+│   │       └── booking/     # Flujo multi-step (useReducer)
+│   └── vite.config.ts
+│
+├── tests/
+│   ├── unit/                # auth · availability · appointment services
+│   └── integration/         # auth · appointments · availability API
+│
+├── ai-context/              # Documentos SDLC previos al código
+│   ├── Analisis_funcional.md
+│   ├── Historias_de_usuario.md
+│   └── Propuesta_tecnica.md
+│
+├── memory-bank/
+│   ├── decisions.md         # Decisiones técnicas tomadas
+│   └── technical-debt.md    # Deuda técnica identificada
+│
+├── prompts/                 # Prompts utilizados con Claude y Claude Code
+├── docs/screenshots/        # Capturas de pantalla de la aplicación
+├── docker-compose.yml
+├── .env.example
+└── CLAUDE.md
+```
 
 ---
 
 ## Variables de entorno
 
-### Raíz (`.env`) — para Docker Compose
+### Raíz `.env` (Docker Compose)
 
 ```env
 JWT_SECRET=supersecret_dev_only
@@ -436,7 +348,7 @@ ADMIN_EMAIL=admin@fisioweb.com
 ADMIN_PASSWORD_HASH=<hash generado con bcrypt>
 ```
 
-### Backend (`backend/.env`) — para desarrollo local sin Docker
+### `backend/.env` (desarrollo local sin Docker)
 
 ```env
 DATABASE_URL=postgresql://fisioweb:fisioweb@localhost:5432/fisioweb
@@ -448,11 +360,20 @@ ADMIN_EMAIL=admin@fisioweb.com
 ADMIN_PASSWORD_HASH=<hash generado con bcrypt>
 ```
 
-Para generar el hash del admin (requiere Docker):
+---
 
-```bash
-docker run --rm node:20-alpine sh -c \
-  "mkdir /tmp/h && cd /tmp/h && npm init -y > /dev/null 2>&1 && \
-   npm install bcryptjs > /dev/null 2>&1 && \
-   node -e \"const b=require('bcryptjs'); b.hash('tu_password_admin', 12).then(console.log)\""
-```
+## Documentos SDLC
+
+Los documentos generados antes de escribir código están en `ai-context/`:
+
+| Documento | Descripción |
+|-----------|-------------|
+| `Analisis_funcional.md` | Requisitos funcionales, actores y casos de uso |
+| `Historias_de_usuario.md` | User stories con criterios de aceptación |
+| `Propuesta_tecnica.md` | Decisiones de stack, arquitectura y seguridad |
+
+---
+
+<p align="center">
+  Desarrollado con Claude + Claude Code · Microcredencial GenAI · NTT DATA
+</p>
